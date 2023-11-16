@@ -1,7 +1,15 @@
 import sys
 import re
+from argparse import ArgumentParser
 
 from bs4 import BeautifulSoup
+
+def arg_parser():
+    p = ArgumentParser("Carteles Moviles generator")
+    p.add_argument("--step-seconds", "-s", default="1", help="Seconds between steps (default=%(default)s)")
+    p.add_argument("files", nargs='+', help="Source .htm files to be used")
+
+    return p
 
 def make_soup(path):
     with open(path, "rb") as f:
@@ -26,8 +34,9 @@ def harmonize_colors(bs):
                 no_black_color = re_color_black.sub("", no_white_background)
                 e["style"] = no_black_color
 
-if __name__ == "__main__":
-
+def main(argv):
+    args = arg_parser().parse_args(argv[1:])
+    
     print("""\
 <html>
 <head>
@@ -43,7 +52,7 @@ if __name__ == "__main__":
 <div id=\"viewport\">
 """)
     
-    for fname in (sys.argv[1:]):
+    for fname in (args.files):
 
         bs = make_soup(fname)
         harmonize_colors(bs)
@@ -65,7 +74,7 @@ if __name__ == "__main__":
     print("""\
 </div>
 <script>
-const step_millis = 1000 // * 60 
+const step_millis = 1000 * """ + args.step_seconds + """
 var on_tick = function() {
     var viewport_height = document.getElementById("viewport").getBoundingClientRect().height
     var window_height = window.innerHeight
@@ -79,3 +88,6 @@ setInterval( on_tick, 1000 );
 </body>
 </html>
 """)
+
+if __name__ == "__main__":
+    main(sys.argv)
