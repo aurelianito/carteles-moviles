@@ -29,7 +29,6 @@ def harmonize_colors(bs):
         if hasattr(e, "get"):
             style = e.get("style")
             if not style is None:
-                # no_enters = style.replace("\n"," ")
                 no_white_background = re_background_white.sub("", style)
                 no_black_color = re_color_black.sub("", no_white_background)
                 e["style"] = no_black_color
