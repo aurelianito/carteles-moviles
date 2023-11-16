@@ -42,8 +42,10 @@ def main(argv):
 <meta charset="UTF-8">
 <style>
     body {
-        overflow: hidden; 
+        overflow: hidden;
         background:black;
+        margin:0px;
+        writing-mode: vertical-rl;
     }
 </style>
 </head>
@@ -75,11 +77,11 @@ def main(argv):
 <script>
 const step_millis = 1000 * """ + args.step_seconds + """
 var on_tick = function() {
-    var viewport_height = document.getElementById("viewport").getBoundingClientRect().height
-    var window_height = window.innerHeight
+    var viewport_width = document.getElementById("viewport").getBoundingClientRect().width
+    var window_width = window.innerWidth
     var millis = Date.now()
-    var position = (millis / step_millis) % (window_height - viewport_height)
-    window.scroll(0,position)
+    var position = (millis / step_millis) % (viewport_width - window_width)
+    window.scroll(-position,0)
 }
 on_tick()
 setInterval( on_tick, 1000 );
