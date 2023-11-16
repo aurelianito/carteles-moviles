@@ -48,3 +48,6 @@ Thumbs.db
 *.mov
 *.wmv
 
+# Added by aure
+*.htm
+/.vscode
