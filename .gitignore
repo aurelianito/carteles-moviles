@@ -51,3 +51,4 @@ Thumbs.db
 # Added by aure
 *.htm
 /.vscode
+/env
