@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 def arg_parser():
     p = ArgumentParser("Carteles Moviles generator")
     p.add_argument("--step-seconds", "-s", default="1", help="Seconds between steps (default=%(default)s)")
+    p.add_argument("--overflow", "-o", default="hidden", help="Generated webpage CSS overflow (default=%(default)s)")
     p.add_argument("--disable-scrolling", "-d", action='store_true', help="Disable auto scrolling in generated web page")
     p.add_argument("files", nargs='+', help="Source .htm files to be used")
 
@@ -43,7 +44,7 @@ def main(argv):
 <meta charset="UTF-8">
 <style>
     body {
-        overflow: hidden;
+        overflow: """ +args.overflow + """;
         background:black;
         margin:0px;
         writing-mode: vertical-rl;
