@@ -55,6 +55,7 @@ def main(argv):
         background:black;
         margin:0px;
         writing-mode: vertical-rl;
+        font-family: sans-serif;
     }
 </style>
 </head>
