@@ -23,17 +23,24 @@ def make_soup(path):
         features="html.parser"
     )
 
-re_background_white = re.compile(r"background:\s*white", re.DOTALL)
-re_color_black = re.compile(r"color:\s*black", re.DOTALL)
+START=r"(^|;)\s*"
+END=r"\s*($|;)"
+REMOVAL_REGEXES = [re.compile(START + r + END, re.DOTALL) for r in (
+    r"background:\s*white",
+    r"color:\s*black",
+    r"background:\s*#\d+",
+    r"color:\s*#\d+",
+    r"[^;]*font-family[^;]*"
+)]
 
-def harmonize_colors(bs):
+def remove_unwanted_style(bs):
     for e in bs.body.find_all(recursive=True):
         if hasattr(e, "get"):
             style = e.get("style")
             if not style is None:
-                no_white_background = re_background_white.sub("", style)
-                no_black_color = re_color_black.sub("", no_white_background)
-                e["style"] = no_black_color
+                for regex in REMOVAL_REGEXES:
+                    style = regex.sub(";", style)
+                e["style"] = style
 
 def main(argv):
     args = arg_parser().parse_args(argv[1:])
@@ -44,7 +51,7 @@ def main(argv):
 <meta charset="UTF-8">
 <style>
     body {
-        overflow: """ +args.overflow + """;
+        overflow: """ + args.overflow + """;
         background:black;
         margin:0px;
         writing-mode: vertical-rl;
@@ -58,7 +65,7 @@ def main(argv):
     for fname in (args.files):
 
         bs = make_soup(fname)
-        harmonize_colors(bs)
+        remove_unwanted_style(bs)
 
         word_section = bs.body.find("div", {"class":"WordSection1"})
 
