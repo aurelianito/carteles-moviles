@@ -74,7 +74,6 @@ def main(argv):
 
         for p in word_section.find_all("p", {"class": "MsoNormal"}, recursive=False):
             for enter_thing in p.find_all("span", {"style":"mso-spacerun:yes"}):
-                ns = enter_thing.find_next_sibling()
                 del enter_thing["style"]
                 enter_thing.string = " "
                 enter_thing.append(bs.new_tag("br"))
