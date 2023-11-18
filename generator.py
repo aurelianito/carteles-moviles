@@ -25,7 +25,7 @@ def make_soup(path):
 
 START=r"(^|;)\s*"
 END=r"\s*($|;)"
-REMOVAL_REGEXES = [re.compile(START + r + END, re.DOTALL) for r in (
+REMOVAL_REGEXES = [re.compile(START + r + END) for r in (
     r"background:\s*white",
     r"color:\s*black",
     r"background:\s*#\d+",
@@ -39,6 +39,7 @@ def remove_unwanted_style(bs):
         if hasattr(e, "get"):
             style = e.get("style")
             if not style is None:
+                style = style.replace("\n", " ").replace("\r", " ")
                 for regex in REMOVAL_REGEXES:
                     style = regex.sub(";", style)
                 e["style"] = style
