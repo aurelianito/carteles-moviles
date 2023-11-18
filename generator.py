@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 def arg_parser():
     p = ArgumentParser("Carteles Moviles generator")
     p.add_argument("--step-seconds", "-s", default="1", help="Seconds between steps (default=%(default)s)")
+    p.add_argument("--disable-scrolling", "-d", action='store_true', help="Disable auto scrolling in generated web page")
     p.add_argument("files", nargs='+', help="Source .htm files to be used")
 
     return p
@@ -83,8 +84,13 @@ var on_tick = function() {
     var position = (millis / step_millis) % (viewport_width - window_width)
     window.scroll(-position,0)
 }
+""")
+    if not args.disable_scrolling:
+        print("""\
 on_tick()
 setInterval( on_tick, 1000 );
+""")
+    print("""
 </script>
 </body>
 </html>
