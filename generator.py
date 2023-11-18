@@ -30,7 +30,8 @@ REMOVAL_REGEXES = [re.compile(START + r + END, re.DOTALL) for r in (
     r"color:\s*black",
     r"background:\s*#\d+",
     r"color:\s*#\d+",
-    r"[^;]*font-family[^;]*"
+    r"[^;]*font-family[^;]*",
+    r"[^;]*theme-font[^;]*",
 )]
 
 def remove_unwanted_style(bs):
