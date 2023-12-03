@@ -9,6 +9,7 @@ def arg_parser():
     p.add_argument("--step-seconds", "-s", default="1", help="Seconds between steps (default=%(default)s)")
     p.add_argument("--overflow", "-o", default="hidden", help="Generated webpage CSS overflow (default=%(default)s)")
     p.add_argument("--disable-scrolling", "-d", action='store_true', help="Disable auto scrolling in generated web page")
+    p.add_argument("--rotated", '-r', action='store_true', help="Show rotated (default no)")
     p.add_argument("files", nargs='+', help="Source .htm files to be used")
 
     return p
@@ -56,8 +57,13 @@ def main(argv):
         overflow: """ + args.overflow + """;
         background:black;
         margin:0px;
-        writing-mode: vertical-rl;
         font-family: sans-serif;
+""")
+    if args.rotated:
+        print("""
+        writing-mode: vertical-rl;
+""")
+    print("""\
     }
 </style>
 </head>
@@ -88,11 +94,31 @@ def main(argv):
 <script>
 const step_millis = 1000 * """ + args.step_seconds + """
 var on_tick = function() {
+""")
+    if args.rotated:
+        print("""\
     var viewport_width = document.getElementById("viewport").getBoundingClientRect().width
     var window_width = window.innerWidth
+""")
+    else:
+        print("""\
+    var viewport_height = document.getElementById("viewport").getBoundingClientRect().height
+    var window_height = window.innerHeight    
+""")
+    print("""\
     var millis = Date.now()
+""")
+    if args.rotated:
+        print("""\
     var position = (millis / step_millis) % (viewport_width - window_width)
     window.scroll(-position,0)
+""")
+    else:
+        print("""\
+    var position = (millis / step_millis) % (window_height - viewport_height)
+    window.scroll(0,position)
+""")
+    print("""\
 }
 """)
     if not args.disable_scrolling:
